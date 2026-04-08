@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Listas — Introdução à Economia</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green:   #1a6b4a;
+    --green-m: #2d9e72;
+    --green-l: #b8ead4;
+    --green-xl:#e8f8f1;
+    --ink:     #0e1a14;
+    --ink-m:   #3a4a40;
+    --ink-l:   #7a9088;
+    --sand:    #f5f2eb;
+    --white:   #ffffff;
+    --err:     #c0392b;
+    --err-l:   #fdecea;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--sand);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--ink);
+    color: var(--white);
+    padding: 4rem 2rem 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(45,158,114,0.25) 0%, transparent 70%);
+    top: -200px; right: -100px;
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    max-width: 640px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(45,158,114,0.18);
+    border: 1px solid rgba(45,158,114,0.35);
+    color: var(--green-l);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+  }
+
+  .tag-dot {
+    width: 7px; height: 7px;
+    background: var(--green-m);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.2rem, 6vw, 3.2rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--green-m);
+  }
+
+  .hero-sub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.6;
+    max-width: 400px;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .meta-item {
+    font-size: 13px;
+    color: rgba(255,255,255,0.4);
+  }
+
+  .meta-item strong {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--white);
+    font-family: 'Syne', sans-serif;
+  }
+
+  /* ── FORM SECTION ── */
+  .section {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 3rem 2rem 5rem;
+  }
+
+  .card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 2rem 2rem 2.5rem;
+    border: 1px solid rgba(0,0,0,0.07);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #f0ece3;
+  }
+
+  .card-icon {
+    width: 42px; height: 42px;
+    background: var(--green-xl);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: var(--ink-l);
+    margin-top: 2px;
+  }
+
+  /* Fields */
+  .field { margin-bottom: 1.25rem; }
+
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-m);
+    margin-bottom: 6px;
+    letter-spacing: 0.01em;
+  }
+
+  .field label span {
+    color: var(--green-m);
+    margin-left: 2px;
+  }
+
+  select, textarea {
+    width: 100%;
+    padding: 11px 14px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    background: var(--sand);
+    border: 1.5px solid transparent;
+    border-radius: 10px;
+    transition: border-color 0.18s, background 0.18s;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+  }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237a9088' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+    cursor: pointer;
+  }
+
+  select:focus, textarea:focus {
+    border-color: var(--green-m);
+    background: var(--white);
+  }
+
+  textarea { height: 80px; resize: vertical; }
+
+  /* File upload */
+  .upload-area {
+    border: 2px dashed #ddd8cc;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.18s, background 0.18s;
+    position: relative;
+    background: var(--sand);
+  }
+
+  .upload-area:hover, .upload-area.over {
+    border-color: var(--green-m);
+    background: var(--green-xl);
+  }
+
+  .upload-area.has-file {
+    border-color: var(--green-m);
+    border-style: solid;
+    background: var(--green-xl);
+  }
+
+  .upload-area input[type=file] {
+    position: absolute; inset: 0;
+    opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+
+  .upload-icon { font-size: 28px; margin-bottom: 8px; }
+
+  .upload-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink-m);
+  }
+
+  .upload-hint {
+    font-size: 12px;
+    color: var(--ink-l);
+    margin-top: 4px;
+  }
+
+  .file-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--green);
+    margin-top: 6px;
+    word-break: break-all;
+  }
+
+  /* Submit */
+  .btn-submit {
+    width: 100%;
+    padding: 14px;
+    margin-top: 1.5rem;
+    background: var(--green);
+    color: var(--white);
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'Syne', sans-serif;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    transition: background 0.18s, transform 0.12s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-submit:hover:not(:disabled) { background: #145939; }
+  .btn-submit:active:not(:disabled) { transform: scale(0.99); }
+  .btn-submit:disabled { background: #a0bbb0; cursor: not-allowed; }
+
+  /* Spinner */
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Messages */
+  .msg {
+    margin-top: 1rem;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+    display: none;
+  }
+  .msg.ok  { background: var(--green-xl); color: var(--green); border: 1px solid var(--green-l); }
+  .msg.err { background: var(--err-l);    color: var(--err);   border: 1px solid #f5c6c2; }
+
+  /* Success state */
+  .success-screen {
+    text-align: center;
+    padding: 2rem 0 1rem;
+    display: none;
+  }
+
+  .success-icon {
+    width: 64px; height: 64px;
+    background: var(--green-xl);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px;
+    margin: 0 auto 1.5rem;
+    border: 2px solid var(--green-l);
+  }
+
+  .success-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--green);
+    margin-bottom: 8px;
+  }
+
+  .success-sub {
+    font-size: 14px;
+    color: var(--ink-l);
+    line-height: 1.6;
+  }
+
+  .btn-novo {
+    margin-top: 1.5rem;
+    padding: 10px 24px;
+    background: transparent;
+    border: 1.5px solid var(--green-m);
+    border-radius: 10px;
+    color: var(--green);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.18s;
+  }
+
+  .btn-novo:hover { background: var(--green-xl); }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 12px;
+    color: var(--ink-l);
+  }
+
+  @media (max-width: 480px) {
+    .hero { padding: 3rem 1.25rem 2.5rem; }
+    .section { padding: 2rem 1.25rem 4rem; }
+    .card { padding: 1.5rem 1.25rem 2rem; }
+    .hero-meta { gap: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="tag">
+      <span class="tag-dot"></span>
+      Envios abertos
+    </div>
+    <h1>Entrega de<br><em>Listas</em><br>Introdução à<br>Economia</h1>
+    <p class="hero-sub">Envie seu PDF pelo formulário abaixo. O arquivo será registrado automaticamente.</p>
+    <div class="hero-meta">
+      <div class="meta-item">
+        <strong>Listas 1–5</strong>
+        Disponíveis
+      </div>
+      <div class="meta-item">
+        <strong>46</strong>
+        Alunos
+      </div>
+      <div class="meta-item">
+        <strong>PDF</strong>
+        Formato aceito
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="section">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">📋</div>
+      <div>
+        <div class="card-title">Enviar lista</div>
+        <div class="card-desc">Preencha os dados e anexe o arquivo</div>
+      </div>
+    </div>
+
+    <div id="form-content">
+      <div class="field">
+        <label>Seu nome<span>*</span></label>
+        <select id="aluno">
+          <option value="">Selecione seu nome...</option>
+          <option>Alaeddine Sahbani</option>
+          <option>Allan Augusto Antônio</option>
+          <option>Amanda Moreira da Silva Vilaça</option>
+          <option>Andre Luis Souza Perroni Filho</option>
+          <option>Carlos Roberto Constantino Vilela</option>
+          <option>Cristina Neto de Ceita Varela</option>
+          <option>Erick Costa Alves Pereira</option>
+          <option>Gabriel Custodio Castro</option>
+          <option>Gabriel Ribeiro da Silva Mansur</option>
+          <option>Guilherme Henrique Oliveira Silva</option>
+          <option>Gustavo Henrique Goncalves de Paula</option>
+          <option>Hemerson Agostinho Cabral Caetano</option>
+          <option>Iasmin Brunieri Petrin</option>
+          <option>João Pontes Pinto Cerino</option>
+          <option>Julia Mara Silva de Araujo</option>
+          <option>Julio Cesar Ribeiro de Almeida Girant</option>
+          <option>Kaua Ferreira da Silva</option>
+          <option>Kauê Henrique Fidelis Cirqueira</option>
+          <option>Lincoln Batista Silva</option>
+          <option>Livia Glenia Montrazzi Silva</option>
+          <option>Lucas Curi Barbosa</option>
+          <option>Luis Guilherme Viana Castro</option>
+          <option>Luiti Felipe Santos</option>
+          <option>Lyvia dos Reis Costa</option>
+          <option>Marco Aurelio Branco</option>
+          <option>Marcos Henrique Duarte de Carvalho Campos</option>
+          <option>Maria Camillie Manzani Alves</option>
+          <option>Maria Cecilia Costa Landim</option>
+          <option>Maria Laura Ferreira Silva</option>
+          <option>Mateus Rodrigues de Freitas</option>
+          <option>Matheus Aleixo Soares Vieira</option>
+          <option>Matheus Laurindo Evangelista</option>
+          <option>Milenna Fernanda Assis Firmino</option>
+          <option>Pamela Rosa Juvencio</option>
+          <option>Paolla Ferreira Palmutti</option>
+          <option>Pedro Henrique de Oliveira Carvalho</option>
+          <option>Pedro Tavares</option>
+          <option>Rafael Inacio Souza</option>
+          <option>Rafaela Cecilia Camilo do Carmo</option>
+          <option>Samuel Carvalho Gonçalves</option>
+          <option>Samuel Lima Trolez</option>
+          <option>Stela Maria Reguim Pereira</option>
+          <option>Thaila Maria Ferreira</option>
+          <option>Victória Rodrigues Silva</option>
+          <option>Vinicius Rozão de Oliveira</option>
+          <option>Yagor Bittencourt Moreno Krauss de Castro</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Número da lista<span>*</span></label>
+        <select id="numero">
+          <option value="">Selecione a lista...</option>
+          <option value="1">Lista 1</option>
+          <option value="2">Lista 2</option>
+          <option value="3">Lista 3</option>
+          <option value="4">Lista 4</option>
+          <option value="5">Lista 5</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Arquivo PDF<span>*</span></label>
+        <div class="upload-area" id="upload-area">
+          <input type="file" id="arquivo" accept=".pdf" onchange="handleFile(this)">
+          <div class="upload-icon" id="upload-icon">📄</div>
+          <div class="upload-text" id="upload-text">Clique ou arraste o PDF aqui</div>
+          <div class="upload-hint" id="upload-hint">Apenas arquivos .pdf — máx. 10 MB</div>
+          <div class="file-name" id="file-name"></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Observação <span style="color:var(--ink-l); font-weight:400;">(opcional)</span></label>
+        <textarea id="obs" placeholder="Ex: questão 3 feita à mão, envio atrasado, etc."></textarea>
+      </div>
+
+      <button class="btn-submit" id="btn" onclick="enviar()">
+        <span id="btn-text">Enviar lista</span>
+        <div class="spinner" id="spinner"></div>
+      </button>
+      <div class="msg" id="msg"></div>
+    </div>
+
+    <div class="success-screen" id="success">
+      <div class="success-icon">✓</div>
+      <div class="success-title">Lista enviada!</div>
+      <p class="success-sub">Seu arquivo foi recebido e registrado com sucesso.<br>Você pode fechar esta página.</p>
+      <button class="btn-novo" onclick="resetForm()">Enviar outro</button>
+    </div>
+  </div>
+</div>
+
+<footer>Introdução à Economia &mdash; Monitor responsável</footer>
+
+<script>
+  // ─────────────────────────────────────────
+  // CONFIGURE AQUI após publicar o Apps Script
+  // ─────────────────────────────────────────
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwyI8FnuuIfY9DDaB5CUvxMRX2x15CIAdFsoRrcplqPDpHy6Ev-XEqjEdOV4ODmQI2qGA/exec";
+  // ─────────────────────────────────────────
+
+  const uploadArea = document.getElementById('upload-area');
+
+  uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('over'); });
+  uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('over'));
+  uploadArea.addEventListener('drop', e => {
+    e.preventDefault();
+    uploadArea.classList.remove('over');
+    const f = e.dataTransfer.files[0];
+    if (f) {
+      document.getElementById('arquivo').files; // can't set directly
+      handleFileObj(f);
+    }
+  });
+
+  let selectedFile = null;
+
+  function handleFile(input) {
+    if (input.files[0]) handleFileObj(input.files[0]);
+  }
+
+  function handleFileObj(file) {
+    selectedFile = file;
+    uploadArea.classList.add('has-file');
+    document.getElementById('upload-icon').textContent = '✅';
+    document.getElementById('upload-text').textContent = 'Arquivo selecionado';
+    document.getElementById('upload-hint').style.display = 'none';
+    document.getElementById('file-name').textContent = file.name;
+  }
+
+  function enviar() {
+    const aluno  = document.getElementById('aluno').value;
+    const numero = document.getElementById('numero').value;
+    const obs    = document.getElementById('obs').value;
+    const btn   = document.getElementById('btn');
+    const msg   = document.getElementById('msg');
+
+    if (!aluno)        return mostrar('Selecione seu nome antes de enviar.', 'err');
+    if (!numero)       return mostrar('Selecione o número da lista.', 'err');
+    if (!selectedFile) return mostrar('Anexe o arquivo PDF da lista.', 'err');
+    if (selectedFile.size > 10 * 1024 * 1024)
+      return mostrar('Arquivo muito grande. O limite é 10 MB.', 'err');
+
+    btn.disabled = true;
+    document.getElementById('btn-text').textContent = 'Enviando...';
+    document.getElementById('spinner').style.display = 'block';
+    msg.style.display = 'none';
+
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64 = reader.result.split(',')[1];
+      try {
+        await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          body: JSON.stringify({
+            aluno,
+            numero: parseInt(numero),
+            lista: obs,
+            arquivo: base64,
+            nomeArquivo: selectedFile.name
+          })
+        });
+        document.getElementById('form-content').style.display = 'none';
+        document.getElementById('success').style.display = 'block';
+      } catch (e) {
+        mostrar('Erro de conexão. Verifique sua internet e tente novamente.', 'err');
+      }
+      btn.disabled = false;
+      document.getElementById('btn-text').textContent = 'Enviar lista';
+      document.getElementById('spinner').style.display = 'none';
+    };
+    reader.readAsDataURL(selectedFile);
+  }
+
+  function mostrar(texto, tipo) {
+    const el = document.getElementById('msg');
+    el.textContent = texto;
+    el.className = 'msg ' + tipo;
+    el.style.display = 'block';
+  }
+
+  function resetForm() {
+    document.getElementById('aluno').value = '';
+    document.getElementById('numero').value = '';
+    document.getElementById('obs').value = '';
+    selectedFile = null;
+    uploadArea.classList.remove('has-file');
+    document.getElementById('upload-icon').textContent = '📄';
+    document.getElementById('upload-text').textContent = 'Clique ou arraste o PDF aqui';
+    document.getElementById('upload-hint').style.display = 'block';
+    document.getElementById('file-name').textContent = '';
+    document.getElementById('form-content').style.display = 'block';
+    document.getElementById('success').style.display = 'none';
+    document.getElementById('msg').style.display = 'none';
+  }
+</script>
+</body>
+</html>
